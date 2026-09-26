@@ -1,98 +1,96 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BH2 | The Hub Value List & Trade Calculator</title>
+
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-M430PG82M6"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-M430PG82M6');
   </script>
 
-  <!-- Favicon / Logo de la pestaña -->
-  <link rel="icon" type="image/png" href="images/favicon.png">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://placehold.co/32x32/10b981/ffffff?text=BH2">
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BH2 | The Hub Value List & Trade Calculator</title>
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      /* Fondo negro profundo y tarjetas negro carbón */
+      /* Deep Black Backgrounds & Carbon Cards */
       --bg-dark: #050505;
       --card-bg: #0d0d0d;
       --card-border: #1f241d;
       
-      /* Tema Verde Neón Gamer */
+      /* Neon Green Theme */
       --green-primary: #10b981;
       --green-bright: #00ff66;
       --green-hover: #059669;
       --green-bg: rgba(16, 185, 129, 0.06);
       --green-border: rgba(16, 185, 129, 0.3);
       
-      /* Acentos Rojos para "Their Offer" */
+      /* Red Accents */
       --red-primary: #ef4444;
       --red-hover: #dc2626;
       --red-bg: rgba(239, 68, 68, 0.06);
       --red-border: rgba(239, 68, 68, 0.3);
       
+      /* Purple Accents for Carlas/Exclusive */
+      --purple-primary: #a855f7;
+      --purple-bg: rgba(168, 85, 247, 0.1);
+      --purple-border: rgba(168, 85, 247, 0.4);
+
       --text-main: #f3f4f6;
       --text-muted: #828a95;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    /* Scrollbar personalizada oscura */
-    ::-webkit-scrollbar {
-      width: 10px;
-      height: 10px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #050505;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #1f241d;
-      border-radius: 5px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--green-primary);
-    }
-
-    * {
-      scrollbar-width: thin;
-      scrollbar-color: #1f241d #050505;
-    }
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #1f241d; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--green-primary); }
+    * { scrollbar-width: thin; scrollbar-color: #1f241d #050505; }
 
     body { 
       font-family: 'Inter', sans-serif; 
       background-color: var(--bg-dark); 
       color: var(--text-main); 
       line-height: 1.5; 
-      padding: 15px 25px; 
+      padding: 15px 20px; 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Contenedor amplio */
     .container { 
-      width: 96%; 
-      max-width: 1750px; 
+      width: 100%; 
+      max-width: 1650px; 
       margin: 0 auto; 
+      flex: 1;
     }
 
-    /* Top Navbar Styles */
+    /* NAVIGATION BAR */
     .navbar {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       background-color: #0b0d12;
-      padding: 10px 20px;
+      padding: 10px 16px;
       border-radius: 12px;
       margin-bottom: 25px;
       border: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      position: relative;
     }
 
     .nav-item {
@@ -102,10 +100,12 @@
       color: var(--text-muted);
       text-decoration: none;
       font-size: 0.95rem;
-      font-weight: 500;
+      font-weight: 600;
       padding: 8px 16px;
       border-radius: 8px;
       transition: all 0.2s ease;
+      cursor: pointer;
+      user-select: none;
     }
 
     .nav-item:hover {
@@ -115,7 +115,8 @@
 
     .nav-item.active {
       background-color: #242933;
-      color: #ffffff;
+      color: var(--green-bright);
+      box-shadow: 0 0 10px rgba(0, 255, 102, 0.15);
     }
 
     .nav-item svg {
@@ -124,10 +125,42 @@
       fill: currentColor;
     }
 
-    /* Header */
+    /* Dropdown Navigation */
+    .dropdown { position: relative; }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 110%;
+      right: 0;
+      background-color: #0d0d0d;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      width: 200px;
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+      overflow: hidden;
+    }
+    .dropdown-menu.show { display: block; }
+    .dropdown-item {
+      padding: 12px 16px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .dropdown-item:hover {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: var(--green-bright);
+    }
+
+    /* HEADER */
     header { text-align: center; margin-bottom: 25px; }
     header h1 { 
-      font-size: 2.6rem; 
+      font-size: 2.5rem; 
       font-weight: 800; 
       letter-spacing: -0.02em; 
       background: linear-gradient(to right, #00ff66, #10b981); 
@@ -136,7 +169,6 @@
     }
     header p { color: var(--text-muted); font-size: 1rem; margin-top: 4px; }
 
-    /* Header Badges / Status */
     .header-status {
       display: flex;
       justify-content: center;
@@ -150,56 +182,68 @@
       border: 1px solid var(--card-border);
       color: var(--text-muted);
       font-size: 0.85rem;
-      padding: 4px 12px;
+      padding: 4px 14px;
       border-radius: 20px;
       font-weight: 500;
     }
 
-    /* Search & Filters */
-    .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+    /* VIEW MANAGEMENT */
+    .page-view {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+    .page-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SEARCH & FILTER BAR */
+    .filter-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
     .search-input, .select-filter { 
       background: var(--card-bg); 
       border: 1px solid var(--card-border); 
       color: var(--text-main); 
-      padding: 14px 18px; 
+      padding: 12px 16px; 
       border-radius: 10px; 
-      font-size: 1rem; 
+      font-size: 0.95rem; 
       outline: none; 
       transition: all 0.2s; 
     }
-    .search-input { flex: 3; min-width: 280px; }
-    .select-filter { flex: 1; min-width: 200px; cursor: pointer; }
+    .search-input { flex: 3; min-width: 250px; }
+    .select-filter { flex: 1; min-width: 170px; cursor: pointer; }
     .search-input:focus, .select-filter:focus { 
       border-color: var(--green-bright); 
-      box-shadow: 0 0 12px rgba(0, 255, 102, 0.25); 
+      box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); 
     }
 
-    /* Main Grid Layout */
+    /* TRADING & ITEMS DASHBOARD GRID */
     .dashboard-grid { 
       display: grid; 
       grid-template-columns: 1fr 380px; 
       gap: 25px; 
     }
-    @media (max-width: 1100px) { 
+    @media (max-width: 1080px) { 
       .dashboard-grid { grid-template-columns: 1fr; } 
     }
 
-    /* Item Grid Container */
-    .items-container { max-height: 780px; overflow-y: auto; padding-right: 10px; }
-    
-    /* Cuadrícula de ítems */
+    /* ITEM GRID CONTAINER */
+    .items-container { max-height: 760px; overflow-y: auto; padding-right: 6px; }
     .items-grid { 
       display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); 
-      gap: 16px; 
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+      gap: 14px; 
     }
 
-    /* Tarjetas individuales */
+    /* ITEM CARDS */
     .item-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 16px 12px;
+      padding: 14px 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -210,50 +254,49 @@
     .item-card:hover { 
       transform: translateY(-4px); 
       border-color: var(--green-bright); 
-      box-shadow: 0 6px 20px rgba(0, 255, 102, 0.18);
+      box-shadow: 0 6px 20px rgba(0, 255, 102, 0.15);
     }
 
     .item-card img {
-      width: 85px;
-      height: 85px;
+      width: 75px;
+      height: 75px;
       object-fit: contain;
-      margin-bottom: 10px;
-    }
-
-    .item-card .item-name {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
-      line-height: 1.25;
-      word-break: break-word;
-    }
-
-    .item-card .item-price {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--green-bright);
       margin-bottom: 8px;
     }
 
+    .item-card .item-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .item-card .item-price {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--green-bright);
+      margin-bottom: 6px;
+    }
+
     .item-card .badge {
-      font-size: 0.75rem;
-      padding: 3px 8px;
+      font-size: 0.72rem;
+      padding: 2px 8px;
       border-radius: 6px;
       background: rgba(255,255,255,0.06);
       color: var(--text-muted);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
-    /* Botones */
+    /* CARD BUTTONS */
     .btn-group { display: flex; gap: 6px; width: 100%; }
     .btn-add { 
       flex: 1; 
       border: none; 
-      padding: 8px 0; 
-      border-radius: 8px; 
+      padding: 7px 0; 
+      border-radius: 6px; 
       font-weight: 700; 
-      font-size: 0.82rem; 
+      font-size: 0.78rem; 
       cursor: pointer; 
       transition: all 0.2s; 
     }
@@ -262,54 +305,103 @@
     .btn-their { background: var(--red-primary); color: #fff; }
     .btn-their:hover { background: var(--red-hover); }
 
-    /* Panel de la Calculadora */
+    /* CALCULATOR PANEL */
     .calculator-card { 
       background: var(--card-bg); 
       border: 1px solid var(--card-border); 
       border-radius: 14px; 
-      padding: 22px; 
+      padding: 20px; 
       display: flex; 
       flex-direction: column; 
-      gap: 20px; 
+      gap: 16px; 
       height: fit-content; 
-      box-shadow: 0 4px 30px rgba(0,0,0,0.85); 
+      box-shadow: 0 4px 25px rgba(0,0,0,0.8); 
     }
     .calculator-card h2 { 
-      font-size: 1.3rem; 
+      font-size: 1.25rem; 
       font-weight: 700; 
       border-bottom: 1px solid var(--card-border); 
-      padding-bottom: 14px; 
+      padding-bottom: 12px; 
       color: #fff; 
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .trade-sides { display: flex; flex-direction: column; gap: 18px; }
+    .trade-sides { display: flex; flex-direction: column; gap: 16px; }
 
-    .side-box-your { background: var(--green-bg); border: 1px solid var(--green-border); border-radius: 10px; padding: 16px; }
+    .side-box-your { background: var(--green-bg); border: 1px solid var(--green-border); border-radius: 10px; padding: 14px; }
     .your-title { color: var(--green-bright); }
 
-    .side-box-their { background: var(--red-bg); border: 1px solid var(--red-border); border-radius: 10px; padding: 16px; }
+    .side-box-their { background: var(--red-bg); border: 1px solid var(--red-border); border-radius: 10px; padding: 14px; }
     .their-title { color: #f87171; }
 
-    .side-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .side-title { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .side-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .side-title { font-size: 0.88rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
 
-    .trade-list { list-style: none; min-height: 90px; max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-    .trade-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.6); padding: 10px 14px; border-radius: 8px; font-size: 0.92rem; border: 1px solid rgba(255,255,255,0.04); }
-    .remove-icon { color: #ef4444; cursor: pointer; font-weight: bold; margin-left: 10px; font-size: 1rem; }
+    .trade-list { list-style: none; min-height: 80px; max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+    .trade-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 0.88rem; border: 1px solid rgba(255,255,255,0.04); }
+    .remove-icon { color: #ef4444; cursor: pointer; font-weight: bold; margin-left: 8px; font-size: 0.95rem; }
     .remove-icon:hover { color: #f87171; }
 
-    .side-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--card-border); font-size: 0.95rem; font-weight: 700; }
+    .side-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--card-border); font-size: 0.9rem; font-weight: 700; }
 
-    /* Dictamen / Resultado */
-    .verdict-box { text-align: center; padding: 14px; border-radius: 10px; font-weight: 800; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .verdict-box { text-align: center; padding: 12px; border-radius: 10px; font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
     .verdict-win { background: rgba(0, 255, 102, 0.15); color: var(--green-bright); border: 1px solid rgba(0, 255, 102, 0.4); }
     .verdict-fair { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
     .verdict-loss { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
 
-    /* Footer Styles */
+    /* PLAYERS VIEW STYLES */
+    .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 15px; }
+    .player-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .player-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #1a1d24;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: var(--green-bright);
+      border: 2px solid var(--green-border);
+    }
+    .player-info h3 { font-size: 1rem; color: #fff; margin-bottom: 2px; }
+    .player-info p { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* CARLAS VIEW STYLES */
+    .carlas-banner {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(16, 185, 129, 0.15));
+      border: 1px solid var(--purple-border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .carlas-banner h2 { color: #d8b4fe; font-size: 1.8rem; margin-bottom: 6px; }
+    .carlas-banner p { color: #e9d5ff; font-size: 0.95rem; }
+
+    /* FULL CALCULATOR VIEW */
+    .full-calc-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 15px;
+    }
+    @media (max-width: 800px) { .full-calc-container { grid-template-columns: 1fr; } }
+
+    /* FOOTER */
     footer {
       margin-top: 40px;
-      padding: 25px 20px;
+      padding: 20px;
       background: var(--card-bg);
       border-top: 1px solid var(--card-border);
       text-align: center;
@@ -321,14 +413,8 @@
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       align-items: center;
-    }
-
-    .discord-box p {
-      color: var(--text-main);
-      font-size: 0.95rem;
-      margin-bottom: 10px;
     }
 
     .discord-btn {
@@ -342,21 +428,16 @@
       font-size: 0.9rem;
       transition: transform 0.2s, background 0.2s;
     }
-
-    .discord-btn:hover {
-      background: #4752C4;
-      transform: translateY(-2px);
-    }
+    .discord-btn:hover { background: #4752C4; transform: translateY(-2px); }
 
     .credits-box {
       color: var(--text-muted);
       font-size: 0.85rem;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
-      padding-top: 15px;
+      padding-top: 12px;
       width: 100%;
     }
 
-    /* Colores personalizados para los créditos */
     .c-emerald { color: #10b981; font-weight: 600; }
     .c-koa { color: #f472b6; font-weight: 600; }
     .c-icy { color: #38bdf8; font-weight: 600; }
@@ -368,98 +449,212 @@
   <div class="container">
     <!-- Top Navigation Bar -->
     <nav class="navbar">
-      <a href="#" class="nav-item">
+      <a class="nav-item active" onclick="switchTab('trading')">
         <svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>
         Trading
       </a>
-      <a href="#" class="nav-item">
+      <a class="nav-item" onclick="switchTab('items')">
         <svg viewBox="0 0 24 24"><path d="M4 11h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1zm10 0h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1zM4 21h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1zm10 0h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1z"/></svg>
         Items
       </a>
-      <a href="#" class="nav-item active">
+      <a class="nav-item" onclick="switchTab('players')">
         <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
         Players
       </a>
-      <a href="#" class="nav-item">
+      <a class="nav-item" onclick="switchTab('calculator')">
         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 14H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
         Calculator
       </a>
-      <a href="#" class="nav-item">
+      <a class="nav-item" onclick="switchTab('carlas')">
         <svg viewBox="0 0 24 24"><path d="M12 2C8 2 5 6 5 11c0 4.4 3.6 11 7 11s7-6.6 7-11c0-5-3-9-7-9z"/></svg>
         Carlas
       </a>
-      <a href="#" class="nav-item">
-        <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-        More ▾
-      </a>
+      <div class="dropdown">
+        <a class="nav-item" onclick="toggleDropdown(event)">
+          <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+          More ▾
+        </a>
+        <div class="dropdown-menu" id="moreDropdown">
+          <a class="dropdown-item" onclick="switchTab('more-guides')">📘 Trading Guides</a>
+          <a class="dropdown-item" onclick="switchTab('more-faq')">❓ FAQ & Rules</a>
+          <a class="dropdown-item" onclick="switchTab('more-changelog')">📜 Value Updates Log</a>
+        </div>
+      </div>
     </nav>
 
     <header>
       <h1>The Hub Value List & Trade Calculator</h1>
       <p>Item Values & Fair Trade Calculator for BH2 Community</p>
       
-      <!-- Status Badges -->
       <div class="header-status">
         <span class="status-badge">🕒 Last updated: 26/09/2026</span>
         <span class="status-badge">🔄 Updates count: 14</span>
       </div>
     </header>
 
-    <div class="filter-bar">
-      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search item..." onkeyup="filterData()">
-      
-      <select id="categoryFilter" class="select-filter" onchange="filterData()">
-        <option value="">All Categories</option>
-        <option value="Overlays">Overlays</option>
-        <option value="Auras">Auras</option>
-        <option value="Mounts">Mounts</option>
-      </select>
+    <!-- 1. TRADING VIEW (Default Hybrid View) -->
+    <div id="view-trading" class="page-view active">
+      <div class="filter-bar">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search item..." onkeyup="filterData()">
+        
+        <select id="categoryFilter" class="select-filter" onchange="filterData()">
+          <option value="">All Categories</option>
+          <option value="Overlays">Overlays</option>
+          <option value="Auras">Auras</option>
+          <option value="Mounts">Mounts</option>
+        </select>
 
-      <select id="statusFilter" class="select-filter" onchange="filterData()">
-        <option value="">Demand</option>
-        <option value="🟢">🟢 Rising</option>
-        <option value="⚪">⚪ Stable</option>
-        <option value="🟣">🟣 Fluctuating</option>
-        <option value="🔴">🔴 Dropping</option>
-        <option value="⚠️">⚠️ Manipulated</option>
-      </select>
-    </div>
-
-    <div class="dashboard-grid">
-      <div class="items-container">
-        <div id="itemsGrid" class="items-grid"></div>
+        <select id="statusFilter" class="select-filter" onchange="filterData()">
+          <option value="">Demand</option>
+          <option value="🟢">🟢 Rising</option>
+          <option value="⚪">⚪ Stable</option>
+          <option value="🟣">🟣 Fluctuating</option>
+          <option value="🔴">🔴 Dropping</option>
+          <option value="⚠️">⚠️ Manipulated</option>
+        </select>
       </div>
 
+      <div class="dashboard-grid">
+        <div class="items-container">
+          <div id="itemsGrid" class="items-grid"></div>
+        </div>
+
+        <div class="calculator-card">
+          <h2>
+            Trade Calculator
+            <button onclick="resetCalculator()" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-size:0.8rem;">Reset ↺</button>
+          </h2>
+          
+          <div class="trade-sides">
+            <div class="side-box-your">
+              <div class="side-header">
+                <span class="side-title your-title">Your Offer</span>
+              </div>
+              <ul id="yourList" class="trade-list"></ul>
+              <div class="side-footer">
+                <span>Your Total:</span>
+                <span id="yourTotal" style="color: var(--green-bright);">0m</span>
+              </div>
+            </div>
+
+            <div class="side-box-their">
+              <div class="side-header">
+                <span class="side-title their-title">Their Offer</span>
+              </div>
+              <ul id="theirList" class="trade-list"></ul>
+              <div class="side-footer">
+                <span>Their Total:</span>
+                <span id="theirTotal" style="color: #f87171;">0m</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="verdictBox" class="verdict-box verdict-fair">
+            Equal Trade
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. ITEMS VIEW (Full Width Grid & Values) -->
+    <div id="view-items" class="page-view">
+      <div class="filter-bar">
+        <input type="text" id="searchInputItems" class="search-input" placeholder="🔍 Search items by name..." onkeyup="filterDataItems()">
+        <select id="categoryFilterItems" class="select-filter" onchange="filterDataItems()">
+          <option value="">All Categories</option>
+          <option value="Overlays">Overlays</option>
+          <option value="Auras">Auras</option>
+          <option value="Mounts">Mounts</option>
+        </select>
+      </div>
+      <div id="fullItemsGrid" class="items-grid"></div>
+    </div>
+
+    <!-- 3. PLAYERS VIEW -->
+    <div id="view-players" class="page-view">
+      <div class="filter-bar">
+        <input type="text" id="searchPlayer" class="search-input" placeholder="🔍 Search BH2 trader, reputation, or username..." onkeyup="filterPlayers()">
+      </div>
+      <div id="playersGrid" class="players-grid"></div>
+    </div>
+
+    <!-- 4. CALCULATOR VIEW (Full Screen Dual Side) -->
+    <div id="view-calculator" class="page-view">
+      <div style="margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="color:#fff;">Dedicated Trade Calculator</h2>
+        <button onclick="resetCalculator()" class="discord-btn" style="background:#334155;">Clear Both Sides</button>
+      </div>
+      <div class="full-calc-container">
+        <div class="side-box-your" style="min-height:300px;">
+          <div class="side-header">
+            <span class="side-title your-title" style="font-size:1.1rem;">Your Trade Side</span>
+          </div>
+          <ul id="yourListFull" class="trade-list" style="max-height:350px;"></ul>
+          <div class="side-footer" style="font-size:1.1rem; margin-top:20px;">
+            <span>Your Total Value:</span>
+            <span id="yourTotalFull" style="color: var(--green-bright);">0m</span>
+          </div>
+        </div>
+
+        <div class="side-box-their" style="min-height:300px;">
+          <div class="side-header">
+            <span class="side-title their-title" style="font-size:1.1rem;">Their Trade Side</span>
+          </div>
+          <ul id="theirListFull" class="trade-list" style="max-height:350px;"></ul>
+          <div class="side-footer" style="font-size:1.1rem; margin-top:20px;">
+            <span>Their Total Value:</span>
+            <span id="theirTotalFull" style="color: #f87171;">0m</span>
+          </div>
+        </div>
+      </div>
+      <div id="verdictBoxFull" class="verdict-box verdict-fair" style="margin-top:20px; padding:20px; font-size:1.3rem;">
+        Equal Trade
+      </div>
+    </div>
+
+    <!-- 5. CARLAS VIEW -->
+    <div id="view-carlas" class="page-view">
+      <div class="carlas-banner">
+        <h2>👑 Carlas Exclusive Collection & Showcase</h2>
+        <p>Special edition items, rare collectibles, and verified high-tier trading vaults.</p>
+      </div>
+      <div id="carlasGrid" class="items-grid"></div>
+    </div>
+
+    <!-- 6. MORE / GUIDES VIEW -->
+    <div id="view-more-guides" class="page-view">
       <div class="calculator-card">
-        <h2>Trade Calculator</h2>
-        
-        <div class="trade-sides">
-          <div class="side-box-your">
-            <div class="side-header">
-              <span class="side-title your-title">Your Offer</span>
-            </div>
-            <ul id="yourList" class="trade-list"></ul>
-            <div class="side-footer">
-              <span>Your Total:</span>
-              <span id="yourTotal" style="color: var(--green-bright);">0m</span>
-            </div>
-          </div>
+        <h2>📘 BH2 Trading & Safety Guide</h2>
+        <p style="color: var(--text-muted); margin-top: 10px;">
+          1. Always verify item demand indicators before making big trades.<br>
+          2. Use official Discord middleman services for trades exceeding normal limits.<br>
+          3. Items marked with ⚠️ Manipulated are prone to artificial price inflations.
+        </p>
+      </div>
+    </div>
 
-          <div class="side-box-their">
-            <div class="side-header">
-              <span class="side-title their-title">Their Offer</span>
-            </div>
-            <ul id="theirList" class="trade-list"></ul>
-            <div class="side-footer">
-              <span>Their Total:</span>
-              <span id="theirTotal" style="color: #f87171;">0m</span>
-            </div>
-          </div>
-        </div>
+    <!-- 7. MORE / FAQ VIEW -->
+    <div id="view-more-faq" class="page-view">
+      <div class="calculator-card">
+        <h2>❓ Frequently Asked Questions</h2>
+        <p style="color: var(--text-muted); margin-top: 10px;">
+          <strong>Q: How often are values updated?</strong><br>
+          A: Prices are updated weekly based on completed community trades.<br><br>
+          <strong>Q: What does "m" mean?</strong><br>
+          A: "m" stands for Millions in BH2 standard currency units.
+        </p>
+      </div>
+    </div>
 
-        <div id="verdictBox" class="verdict-box verdict-fair">
-          Equal Trade
-        </div>
+    <!-- 8. MORE / CHANGELOG VIEW -->
+    <div id="view-more-changelog" class="page-view">
+      <div class="calculator-card">
+        <h2>📜 Recent Value Updates</h2>
+        <ul style="color: var(--text-muted); padding-left:20px; margin-top:10px;">
+          <li>26/09/2026 - Adjusted Yuletide Blaze value to 25.0m</li>
+          <li>20/09/2026 - Updated Valentine Dress demand status</li>
+          <li>15/09/2026 - Added new Mounts category items</li>
+        </ul>
       </div>
     </div>
 
@@ -479,6 +674,311 @@
     </footer>
   </div>
 
-  <script src="script.js?v=5"></script>
+  <script>
+    const items = [
+      // --- OVERLAYS ---
+      { "name": "Altered Soldier", "category": "Overlays", "price": "4.5m", "value": 4.5, "status": "🟣", "image": "images/altered_soldier.png" },
+      { "name": "Amnesia Soldier", "category": "Overlays", "price": "5-6.5m", "value": 5.75, "status": "🟣", "image": "images/amnesia_soldier.png" },
+      { "name": "Chivalric Executioner", "category": "Overlays", "price": "4-6m", "value": 5.0, "status": "🟣", "image": "images/chivalric_executioner.png" },
+      { "name": "Death Ouroboros", "category": "Overlays", "price": "2m", "value": 2.0, "status": "⚪", "image": "images/death_ouroboros.png" },
+      { "name": "Demonstone Blade", "category": "Overlays", "price": "5m", "value": 5.0, "status": "⚪", "image": "images/demonstone_blade.png" },
+      { "name": "Fallen Angel Armor", "category": "Overlays", "price": "6-8m", "value": 7.0, "status": "🟣", "image": "images/fallen_angel_armor.png" },
+      { "name": "Final Aegis", "category": "Overlays", "price": "3-4.5m", "value": 3.75, "status": "🟣", "image": "images/final_aegis.png" },
+      { "name": "Frank", "category": "Overlays", "price": "1m", "value": 1.0, "status": "⚪", "image": "images/frank.png" },
+      { "name": "Frustrated Furball", "category": "Overlays", "price": "2-3m", "value": 2.5, "status": "🟣", "image": "images/frustrated_furball.png" },
+      { "name": "Gingerbread Outfit", "category": "Overlays", "price": "14-16m", "value": 15.0, "status": "⚪", "image": "images/gingerbread_outfit.png" },
+      { "name": "Heart of The Forest", "category": "Overlays", "price": "4-5.5m", "value": 4.75, "status": "🟣", "image": "images/heart_of_the_forest.png" },
+      { "name": "Hollowflare Gourdmail", "category": "Overlays", "price": "15m", "value": 15.0, "status": "⚪", "image": "images/hollowflare_gourdmail.png" },
+      { "name": "Holy Excalibur", "category": "Overlays", "price": "3.5m", "value": 3.5, "status": "⚪", "image": "images/holy_excalibur.png" },
+      { "name": "Hypnotist Jester Costume", "category": "Overlays", "price": "13m", "value": 13.0, "status": "⚪", "image": "images/hypnotist_jester_costume.png" },
+      { "name": "Kyodai Robes", "category": "Overlays", "price": "7m", "value": 7.0, "status": "⚪", "image": "images/kyodai_robes.png" },
+      { "name": "Masked Demon", "category": "Overlays", "price": "7m", "value": 7.0, "status": "⚪", "image": "images/masked_demon.png" },
+      { "name": "Mythic Homura", "category": "Overlays", "price": "4m", "value": 4.0, "status": "⚪", "image": "images/mythic_homura.png" },
+      { "name": "Nun Robes", "category": "Overlays", "price": "5-6m", "value": 5.5, "status": "🟣", "image": "images/nun_robes.png" },
+      { "name": "Radiant Falcon Armor", "category": "Overlays", "price": "5m", "value": 5.0, "status": "⚪", "image": "images/radiant_falcon_armor.png" },
+      { "name": "Sacraficial Soul Set", "category": "Overlays", "price": "7m", "value": 7.0, "status": "⚪", "image": "images/sacraficial_soul_set.png" },
+      { "name": "Scuba Outfit", "category": "Overlays", "price": "5-7m", "value": 6.0, "status": "🟣", "image": "images/scuba_outfit.png" },
+      { "name": "Snowman Costume", "category": "Overlays", "price": "14m", "value": 14.0, "status": "⚪", "image": "images/snowman_costume.png" },
+      { "name": "Tsuu Costume", "category": "Overlays", "price": "4-6m", "value": 5.0, "status": "🟣", "image": "images/tsuu_costume.png" },
+      { "name": "Valentine Dress", "category": "Overlays", "price": "20m", "value": 20.0, "status": "⚪", "image": "images/valentine_dress.png" },
+      { "name": "Wintertide Coat", "category": "Overlays", "price": "18-23m", "value": 20.5, "status": "🟣", "image": "images/wintertide_coat.png" },
+
+      // --- AURAS ---
+      { "name": "Bloodshed", "category": "Auras", "price": "12-14m", "value": 13.0, "status": "🟣", "image": "images/bloodshed.png" },
+      { "name": "Blue Soul", "category": "Auras", "price": "6-8m", "value": 7.0, "status": "⚪", "image": "images/blue_soul.png" },
+      { "name": "Conflagration", "category": "Auras", "price": "4-6m", "value": 5.0, "status": "🟣", "image": "images/conflagration.png" },
+      { "name": "Cosmic Kitten", "category": "Auras", "price": "6m", "value": 6.0, "status": "⚪", "image": "images/cosmic_kitten.png" },
+      { "name": "Cupid's Flame", "category": "Auras", "price": "20m", "value": 20.0, "status": "⚪", "image": "images/cupids_flame.png" },
+      { "name": "Cupid's Storm", "category": "Auras", "price": "15m", "value": 15.0, "status": "⚪", "image": "images/cupids_storm.png" },
+      { "name": "Dark Lightning", "category": "Auras", "price": "10m", "value": 10.0, "status": "🟢", "image": "images/dark_lightning.png" },
+      { "name": "Falling Feels", "category": "Auras", "price": "12-14m", "value": 13.0, "status": "🟣", "image": "images/falling_feels.png" },
+      { "name": "Frozen Storm", "category": "Auras", "price": "7m", "value": 7.0, "status": "⚪", "image": "images/frozen_storm.png" },
+      { "name": "Icy Inferno", "category": "Auras", "price": "10m", "value": 10.0, "status": "🟢", "image": "images/icy_inferno.png" },
+      { "name": "Jelly Surge", "category": "Auras", "price": "3-4m", "value": 3.5, "status": "🟣", "image": "images/jelly_surge.png" },
+      { "name": "Leaping Legend", "category": "Auras", "price": "6m", "value": 6.0, "status": "⚪", "image": "images/leaping_legend.png" },
+      { "name": "Lightshow", "category": "Auras", "price": "4m", "value": 4.0, "status": "⚪", "image": "images/lightshow.png" },
+      { "name": "Poison Peak", "category": "Auras", "price": "1.5-3m", "value": 2.25, "status": "🟣", "image": "images/poison_peak.png" },
+      { "name": "Shadow Ash", "category": "Auras", "price": "2.5-3.5m", "value": 3.0, "status": "🟣", "image": "images/shadow_ash.png" },
+      { "name": "Sightful", "category": "Auras", "price": "4m", "value": 4.0, "status": "⚪", "image": "images/sightful.png" },
+      { "name": "Solar Flare", "category": "Auras", "price": "3m", "value": 3.0, "status": "⚪", "image": "images/solar_flare.png" },
+      { "name": "Sun Wrath", "category": "Auras", "price": "17-20m", "value": 18.5, "status": "🟣", "image": "images/sun_wrath.png" },
+      { "name": "Supernova", "category": "Auras", "price": "2-3.5m", "value": 2.75, "status": "🟣", "image": "images/supernova.png" },
+      { "name": "Teal Bloom", "category": "Auras", "price": "10m", "value": 10.0, "status": "⚪", "image": "images/teal_bloom.png" },
+      { "name": "Water Wrath", "category": "Auras", "price": "6-7.5m", "value": 6.75, "status": "⚪", "image": "images/water_wrath.png" },
+      { "name": "Yuletide Blaze", "category": "Auras", "price": "25m", "value": 25.0, "status": "⚪", "image": "images/yuletide_blaze.png" },
+
+      // --- MOUNTS ---
+      { "name": "Dune Rider", "category": "Mounts", "price": "6-7m", "value": 6.5, "status": "🟣", "image": "images/dune_rider.png" },
+      { "name": "Enchanted Hyoraiten", "category": "Mounts", "price": "6-8m", "value": 7.0, "status": "🟣", "image": "images/enchanted_hyoraiten.png" },
+      { "name": "Fluffim", "category": "Mounts", "price": "2.5m", "value": 2.5, "status": "⚪", "image": "images/fluffim.png" },
+      { "name": "Hell Horse", "category": "Mounts", "price": "10m", "value": 10.0, "status": "⚪", "image": "images/hell_horse.png" },
+      { "name": "Hikariryuu", "category": "Mounts", "price": "4.5m", "value": 4.5, "status": "⚪", "image": "images/hikariryuu.png" },
+      { "name": "Infernal Wolf", "category": "Mounts", "price": "1.6-2.2m", "value": 1.9, "status": "🟣", "image": "images/infernal_wolf.png" },
+      { "name": "Metal Slime", "category": "Mounts", "price": "1.5m", "value": 1.5, "status": "⚪", "image": "images/metal_slime.png" },
+      { "name": "Submarine", "category": "Mounts", "price": "5m", "value": 5.0, "status": "⚪", "image": "images/submarine.png" },
+      { "name": "Yeti", "category": "Mounts", "price": "1-2m", "value": 1.5, "status": "🟣", "image": "images/yeti.png" }
+    ];
+
+    const playersData = [
+      { name: "Dijunti", rep: "100% Legit", status: "Verified Price Mod", trades: 420 },
+      { name: "Sonvra", rep: "Trusted Trader", status: "Community Staff", trades: 312 },
+      { name: "Koa", rep: "Verified", status: "Active Trader", trades: 189 },
+      { name: "Icy", rep: "Verified", status: "High Roller", trades: 245 },
+      { name: "Nexus_BH2", rep: "Trusted", status: "Trader", trades: 94 }
+    ];
+
+    let yourTrade = [];
+    let theirTrade = [];
+
+    function switchTab(viewId) {
+      // Close dropdown
+      const dropdown = document.getElementById("moreDropdown");
+      if (dropdown) dropdown.classList.remove("show");
+
+      // Hide all views
+      const views = document.querySelectorAll('.page-view');
+      views.forEach(view => view.classList.remove('active'));
+
+      // Deactivate all nav items
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => item.classList.remove('active'));
+
+      // Show target view
+      const targetView = document.getElementById('view-' + viewId);
+      if (targetView) {
+        targetView.classList.add('active');
+      }
+
+      // Highlight corresponding navbar button if applicable
+      navItems.forEach(item => {
+        if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(`'${viewId}'`)) {
+          item.classList.add('active');
+        }
+      });
+    }
+
+    function toggleDropdown(e) {
+      e.stopPropagation();
+      const dropdown = document.getElementById("moreDropdown");
+      dropdown.classList.toggle("show");
+    }
+
+    window.addEventListener('click', () => {
+      const dropdown = document.getElementById("moreDropdown");
+      if (dropdown) dropdown.classList.remove("show");
+    });
+
+    function renderItemsGrid(itemsToRender, targetContainerId = "itemsGrid") {
+      const container = document.getElementById(targetContainerId);
+      if (!container) return;
+
+      container.innerHTML = "";
+
+      itemsToRender.forEach((item) => {
+        const originalIndex = items.indexOf(item);
+        const card = document.createElement("div");
+        card.className = "item-card";
+
+        // Placeholder fallback image handler
+        const fallbackUrl = `https://placehold.co/80x80/0d0d0d/00ff66?text=${encodeURIComponent(item.name.substring(0,3))}`;
+
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null; this.src='${fallbackUrl}';">
+          <div class="item-name">${item.name}</div>
+          <div class="item-price">${item.price}</div>
+          <div class="badge">${item.status} ${item.category}</div>
+          <div class="btn-group">
+            <button class="btn-add btn-your" onclick="addToYour(${originalIndex})">+ Your</button>
+            <button class="btn-add btn-their" onclick="addToTheir(${originalIndex})">+ Their</button>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function filterData() {
+      const searchText = document.getElementById("searchInput").value.toLowerCase();
+      const categorySelected = document.getElementById("categoryFilter") ? document.getElementById("categoryFilter").value : "";
+      const statusSelected = document.getElementById("statusFilter").value;
+
+      const filtered = items.filter((item) => {
+        const matchesSearch = item.name.toLowerCase().includes(searchText);
+        const matchesCategory = categorySelected === "" || item.category === categorySelected;
+        const matchesStatus = statusSelected === "" || item.status === statusSelected;
+        
+        return matchesSearch && matchesCategory && matchesStatus;
+      });
+
+      renderItemsGrid(filtered, "itemsGrid");
+    }
+
+    function filterDataItems() {
+      const searchText = document.getElementById("searchInputItems").value.toLowerCase();
+      const categorySelected = document.getElementById("categoryFilterItems").value;
+
+      const filtered = items.filter((item) => {
+        const matchesSearch = item.name.toLowerCase().includes(searchText);
+        const matchesCategory = categorySelected === "" || item.category === categorySelected;
+        return matchesSearch && matchesCategory;
+      });
+
+      renderItemsGrid(filtered, "fullItemsGrid");
+    }
+
+    function renderPlayers(playersToRender) {
+      const container = document.getElementById("playersGrid");
+      if (!container) return;
+      container.innerHTML = "";
+
+      playersToRender.forEach(player => {
+        const card = document.createElement("div");
+        card.className = "player-card";
+        card.innerHTML = `
+          <div class="player-avatar">${player.name.substring(0, 2).toUpperCase()}</div>
+          <div class="player-info">
+            <h3>${player.name}</h3>
+            <p>⭐ ${player.rep} | 🟢 ${player.status}</p>
+            <p style="color:var(--green-bright); font-weight:600; margin-top:2px;">🤝 ${player.trades} Completed Trades</p>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterPlayers() {
+      const query = document.getElementById("searchPlayer").value.toLowerCase();
+      const filtered = playersData.filter(p => p.name.toLowerCase().includes(query) || p.status.toLowerCase().includes(query));
+      renderPlayers(filtered);
+    }
+
+    function addToYour(itemIndex) {
+      const item = items[itemIndex];
+      if (item) {
+        yourTrade.push(item);
+        updateCalculator();
+      }
+    }
+
+    function addToTheir(itemIndex) {
+      const item = items[itemIndex];
+      if (item) {
+        theirTrade.push(item);
+        updateCalculator();
+      }
+    }
+
+    function removeFromYour(index) {
+      yourTrade.splice(index, 1);
+      updateCalculator();
+    }
+
+    function removeFromTheir(index) {
+      theirTrade.splice(index, 1);
+      updateCalculator();
+    }
+
+    function resetCalculator() {
+      yourTrade = [];
+      theirTrade = [];
+      updateCalculator();
+    }
+
+    function updateCalculator() {
+      // Targets for both default & full view calculators
+      const targets = [
+        { yourList: "yourList", theirList: "theirList", yourTotal: "yourTotal", theirTotal: "theirTotal", verdict: "verdictBox" },
+        { yourList: "yourListFull", theirList: "theirListFull", yourTotal: "yourTotalFull", theirTotal: "theirTotalFull", verdict: "verdictBoxFull" }
+      ];
+
+      let yourSum = 0;
+      yourTrade.forEach(item => yourSum += item.value);
+
+      let theirSum = 0;
+      theirTrade.forEach(item => theirSum += item.value);
+
+      const diff = theirSum - yourSum;
+
+      targets.forEach(t => {
+        const yourListEl = document.getElementById(t.yourList);
+        const theirListEl = document.getElementById(t.theirList);
+        const yourTotalEl = document.getElementById(t.yourTotal);
+        const theirTotalEl = document.getElementById(t.theirTotal);
+        const verdictBox = document.getElementById(t.verdict);
+
+        if (yourListEl) {
+          yourListEl.innerHTML = "";
+          yourTrade.forEach((item, idx) => {
+            yourListEl.innerHTML += `
+              <li class="trade-item">
+                <span>${item.name} (${item.value}m)</span>
+                <span class="remove-icon" onclick="removeFromYour(${idx})">✕</span>
+              </li>
+            `;
+          });
+        }
+
+        if (theirListEl) {
+          theirListEl.innerHTML = "";
+          theirTrade.forEach((item, idx) => {
+            theirListEl.innerHTML += `
+              <li class="trade-item">
+                <span>${item.name} (${item.value}m)</span>
+                <span class="remove-icon" onclick="removeFromTheir(${idx})">✕</span>
+              </li>
+            `;
+          });
+        }
+
+        if (yourTotalEl) yourTotalEl.innerText = `${yourSum.toFixed(2)}m`;
+        if (theirTotalEl) theirTotalEl.innerText = `${theirSum.toFixed(2)}m`;
+
+        if (verdictBox) {
+          verdictBox.className = "verdict-box";
+          if (yourSum === 0 && theirSum === 0) {
+            verdictBox.innerText = "Equal Trade";
+            verdictBox.classList.add("verdict-fair");
+          } else if (Math.abs(diff) <= 0.5) {
+            verdictBox.innerText = "Fair Trade ⚖️";
+            verdictBox.classList.add("verdict-fair");
+          } else if (diff > 0.5) {
+            verdictBox.innerText = `WIN (+${diff.toFixed(2)}m) 🚀`;
+            verdictBox.classList.add("verdict-win");
+          } else {
+            verdictBox.innerText = `LOSE (${diff.toFixed(2)}m) 🛑`;
+            verdictBox.classList.add("verdict-loss");
+          }
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderItemsGrid(items, "itemsGrid");
+      renderItemsGrid(items, "fullItemsGrid");
+      renderItemsGrid(items.filter(i => i.value >= 15.0), "carlasGrid");
+      renderPlayers(playersData);
+      updateCalculator();
+    });
+  </script>
 </body>
 </html>
