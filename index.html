@@ -220,10 +220,10 @@
       box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); 
     }
 
-    /* TRADING & ITEMS DASHBOARD GRID (SWAPPED: Calculator/More GUI Left, Items/Trading Right) */
+    /* TRADING & ITEMS DASHBOARD GRID */
     .dashboard-grid { 
       display: grid; 
-      grid-template-columns: 380px 1fr; 
+      grid-template-columns: 1fr 380px; 
       gap: 25px; 
     }
     @media (max-width: 1080px) { 
@@ -492,7 +492,7 @@
       </div>
     </header>
 
-    <!-- 1. TRADING VIEW (Layout: More/Calc GUI Left, Trading GUI Right) -->
+    <!-- 1. TRADING VIEW (Default Hybrid View) -->
     <div id="view-trading" class="page-view active">
       <div class="filter-bar">
         <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search item..." onkeyup="filterData()">
@@ -515,7 +515,10 @@
       </div>
 
       <div class="dashboard-grid">
-        <!-- LEFT SIDE: CALCULATOR / MORE GUI -->
+        <div class="items-container">
+          <div id="itemsGrid" class="items-grid"></div>
+        </div>
+
         <div class="calculator-card">
           <h2>
             Trade Calculator
@@ -549,11 +552,6 @@
           <div id="verdictBox" class="verdict-box verdict-fair">
             Equal Trade
           </div>
-        </div>
-
-        <!-- RIGHT SIDE: TRADING GUI ITEMS -->
-        <div class="items-container">
-          <div id="itemsGrid" class="items-grid"></div>
         </div>
       </div>
     </div>
@@ -743,128 +741,160 @@
 
     const playersData = [
       { name: "Dijunti", rep: "100% Legit", status: "Verified Price Mod", trades: 420 },
-      { name: "Sonvra", rep: "Trusted Creator", status: "BH2 Admin", trades: 310 },
-      { name: "Koa", rep: "Top Helper", status: "Community Mod", trades: 250 },
-      { name: "Icy", rep: "Highly Reputed", status: "Veteran Trader", trades: 195 }
+      { name: "Sonvra", rep: "Trusted Trader", status: "Community Staff", trades: 312 },
+      { name: "Koa", rep: "Verified", status: "Active Trader", trades: 189 },
+      { name: "Icy", rep: "Verified", status: "High Roller", trades: 245 },
+      { name: "Nexus_BH2", rep: "Trusted", status: "Trader", trades: 94 }
     ];
 
     let yourTrade = [];
     let theirTrade = [];
 
-    // SWITCH TAB NAVIGATION
-    function switchTab(tabId) {
-      document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    function switchTab(viewId) {
+      // Close dropdown
+      const dropdown = document.getElementById("moreDropdown");
+      if (dropdown) dropdown.classList.remove("show");
 
-      const selectedView = document.getElementById(`view-${tabId}`);
-      if (selectedView) {
-        selectedView.classList.add('active');
+      // Hide all views
+      const views = document.querySelectorAll('.page-view');
+      views.forEach(view => view.classList.remove('active'));
+
+      // Deactivate all nav items
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => item.classList.remove('active'));
+
+      // Show target view
+      const targetView = document.getElementById('view-' + viewId);
+      if (targetView) {
+        targetView.classList.add('active');
       }
 
-      // Close dropdowns when switching tabs
-      document.getElementById('moreDropdown').classList.remove('show');
-
-      // Highlight active nav tab if top-level
-      const clickedNav = Array.from(document.querySelectorAll('.navbar > .nav-item')).find(el => el.getAttribute('onclick')?.includes(`'${tabId}'`));
-      if (clickedNav) clickedNav.classList.add('active');
+      // Highlight corresponding navbar button if applicable
+      navItems.forEach(item => {
+        if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(`'${viewId}'`)) {
+          item.classList.add('active');
+        }
+      });
     }
 
-    // DROPDOWN MENU TOGGLE
     function toggleDropdown(e) {
       e.stopPropagation();
-      document.getElementById('moreDropdown').classList.toggle('show');
+      const dropdown = document.getElementById("moreDropdown");
+      dropdown.classList.toggle("show");
     }
 
-    window.onclick = function() {
-      document.getElementById('moreDropdown').classList.remove('show');
-    };
+    window.addEventListener('click', () => {
+      const dropdown = document.getElementById("moreDropdown");
+      if (dropdown) dropdown.classList.remove("show");
+    });
 
-    // RENDER ITEMS (TRADING VIEW)
-    function renderItems(data) {
-      const grid = document.getElementById('itemsGrid');
-      grid.innerHTML = '';
-      data.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'item-card';
+    function renderItemsGrid(itemsToRender, targetContainerId = "itemsGrid") {
+      const container = document.getElementById(targetContainerId);
+      if (!container) return;
+
+      container.innerHTML = "";
+
+      itemsToRender.forEach((item) => {
+        const originalIndex = items.indexOf(item);
+        const card = document.createElement("div");
+        card.className = "item-card";
+
+        // Placeholder fallback image handler
+        const fallbackUrl = `https://placehold.co/80x80/0d0d0d/00ff66?text=${encodeURIComponent(item.name.substring(0,3))}`;
+
         card.innerHTML = `
-          <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/75x75/1f241d/ffffff?text=${encodeURIComponent(item.name.charAt(0))}'">
+          <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null; this.src='${fallbackUrl}';">
           <div class="item-name">${item.name}</div>
           <div class="item-price">${item.price}</div>
-          <div class="badge">${item.category} ${item.status}</div>
+          <div class="badge">${item.status} ${item.category}</div>
           <div class="btn-group">
-            <button class="btn-add btn-your" onclick="addToTrade('${item.name}', ${item.value}, 'your')">+ Your</button>
-            <button class="btn-add btn-their" onclick="addToTrade('${item.name}', ${item.value}, 'their')">+ Their</button>
+            <button class="btn-add btn-your" onclick="addToYour(${originalIndex})">+ Your</button>
+            <button class="btn-add btn-their" onclick="addToTheir(${originalIndex})">+ Their</button>
           </div>
         `;
-        grid.appendChild(card);
+
+        container.appendChild(card);
       });
     }
 
-    // RENDER ITEMS (FULL ITEMS VIEW)
-    function renderFullItems(data) {
-      const grid = document.getElementById('fullItemsGrid');
-      grid.innerHTML = '';
-      data.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'item-card';
-        card.innerHTML = `
-          <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/75x75/1f241d/ffffff?text=${encodeURIComponent(item.name.charAt(0))}'">
-          <div class="item-name">${item.name}</div>
-          <div class="item-price">${item.price}</div>
-          <div class="badge">${item.category} ${item.status}</div>
-        `;
-        grid.appendChild(card);
+    function filterData() {
+      const searchText = document.getElementById("searchInput").value.toLowerCase();
+      const categorySelected = document.getElementById("categoryFilter") ? document.getElementById("categoryFilter").value : "";
+      const statusSelected = document.getElementById("statusFilter").value;
+
+      const filtered = items.filter((item) => {
+        const matchesSearch = item.name.toLowerCase().includes(searchText);
+        const matchesCategory = categorySelected === "" || item.category === categorySelected;
+        const matchesStatus = statusSelected === "" || item.status === statusSelected;
+        
+        return matchesSearch && matchesCategory && matchesStatus;
       });
+
+      renderItemsGrid(filtered, "itemsGrid");
     }
 
-    // RENDER CARLAS EXCLUSIVES
-    function renderCarlas() {
-      const grid = document.getElementById('carlasGrid');
-      grid.innerHTML = '';
-      const carlasItems = items.filter(i => i.value >= 15);
-      carlasItems.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'item-card';
-        card.style.borderColor = 'var(--purple-border)';
-        card.innerHTML = `
-          <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/75x75/a855f7/ffffff?text=👑'">
-          <div class="item-name" style="color:#d8b4fe;">${item.name}</div>
-          <div class="item-price">${item.price}</div>
-          <div class="badge" style="background:var(--purple-bg); color:#d8b4fe;">👑 High Tier</div>
-        `;
-        grid.appendChild(card);
+    function filterDataItems() {
+      const searchText = document.getElementById("searchInputItems").value.toLowerCase();
+      const categorySelected = document.getElementById("categoryFilterItems").value;
+
+      const filtered = items.filter((item) => {
+        const matchesSearch = item.name.toLowerCase().includes(searchText);
+        const matchesCategory = categorySelected === "" || item.category === categorySelected;
+        return matchesSearch && matchesCategory;
       });
+
+      renderItemsGrid(filtered, "fullItemsGrid");
     }
 
-    // RENDER PLAYERS
-    function renderPlayers(data) {
-      const grid = document.getElementById('playersGrid');
-      grid.innerHTML = '';
-      data.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'player-card';
+    function renderPlayers(playersToRender) {
+      const container = document.getElementById("playersGrid");
+      if (!container) return;
+      container.innerHTML = "";
+
+      playersToRender.forEach(player => {
+        const card = document.createElement("div");
+        card.className = "player-card";
         card.innerHTML = `
-          <div class="player-avatar">${p.name.charAt(0)}</div>
+          <div class="player-avatar">${player.name.substring(0, 2).toUpperCase()}</div>
           <div class="player-info">
-            <h3>${p.name}</h3>
-            <p>Reputation: <strong style="color:var(--green-bright);">${p.rep}</strong></p>
-            <p>Status: ${p.status} | Trades: ${p.trades}</p>
+            <h3>${player.name}</h3>
+            <p>⭐ ${player.rep} | 🟢 ${player.status}</p>
+            <p style="color:var(--green-bright); font-weight:600; margin-top:2px;">🤝 ${player.trades} Completed Trades</p>
           </div>
         `;
-        grid.appendChild(card);
+        container.appendChild(card);
       });
     }
 
-    // CALCULATOR FUNCTIONS
-    function addToTrade(name, value, side) {
-      if (side === 'your') yourTrade.push({ name, value });
-      else theirTrade.push({ name, value });
+    function filterPlayers() {
+      const query = document.getElementById("searchPlayer").value.toLowerCase();
+      const filtered = playersData.filter(p => p.name.toLowerCase().includes(query) || p.status.toLowerCase().includes(query));
+      renderPlayers(filtered);
+    }
+
+    function addToYour(itemIndex) {
+      const item = items[itemIndex];
+      if (item) {
+        yourTrade.push(item);
+        updateCalculator();
+      }
+    }
+
+    function addToTheir(itemIndex) {
+      const item = items[itemIndex];
+      if (item) {
+        theirTrade.push(item);
+        updateCalculator();
+      }
+    }
+
+    function removeFromYour(index) {
+      yourTrade.splice(index, 1);
       updateCalculator();
     }
 
-    function removeFromTrade(index, side) {
-      if (side === 'your') yourTrade.splice(index, 1);
-      else theirTrade.splice(index, 1);
+    function removeFromTheir(index) {
+      theirTrade.splice(index, 1);
       updateCalculator();
     }
 
@@ -875,98 +905,80 @@
     }
 
     function updateCalculator() {
-      const renderSide = (listId, data, side) => {
-        const list = document.getElementById(listId);
-        if (!list) return;
-        list.innerHTML = '';
-        data.forEach((item, index) => {
-          const li = document.createElement('li');
-          li.className = 'trade-item';
-          li.innerHTML = `
-            <span>${item.name} (${item.value}m)</span>
-            <span class="remove-icon" onclick="removeFromTrade(${index}, '${side}')">✕</span>
-          `;
-          list.appendChild(li);
-        });
-      };
+      // Targets for both default & full view calculators
+      const targets = [
+        { yourList: "yourList", theirList: "theirList", yourTotal: "yourTotal", theirTotal: "theirTotal", verdict: "verdictBox" },
+        { yourList: "yourListFull", theirList: "theirListFull", yourTotal: "yourTotalFull", theirTotal: "theirTotalFull", verdict: "verdictBoxFull" }
+      ];
 
-      // Main View Calculator Sync
-      renderSide('yourList', yourTrade, 'your');
-      renderSide('theirList', theirTrade, 'their');
-      
-      // Full View Calculator Sync
-      renderSide('yourListFull', yourTrade, 'your');
-      renderSide('theirListFull', theirTrade, 'their');
+      let yourSum = 0;
+      yourTrade.forEach(item => yourSum += item.value);
 
-      const yourSum = yourTrade.reduce((acc, i) => acc + i.value, 0);
-      const theirSum = theirTrade.reduce((acc, i) => acc + i.value, 0);
+      let theirSum = 0;
+      theirTrade.forEach(item => theirSum += item.value);
 
-      document.getElementById('yourTotal').innerText = `${yourSum.toFixed(2)}m`;
-      document.getElementById('theirTotal').innerText = `${theirSum.toFixed(2)}m`;
-      if (document.getElementById('yourTotalFull')) document.getElementById('yourTotalFull').innerText = `${yourSum.toFixed(2)}m`;
-      if (document.getElementById('theirTotalFull')) document.getElementById('theirTotalFull').innerText = `${theirSum.toFixed(2)}m`;
+      const diff = theirSum - yourSum;
 
-      const diff = yourSum - theirSum;
-      const verdict = document.getElementById('verdictBox');
-      const verdictFull = document.getElementById('verdictBoxFull');
+      targets.forEach(t => {
+        const yourListEl = document.getElementById(t.yourList);
+        const theirListEl = document.getElementById(t.theirList);
+        const yourTotalEl = document.getElementById(t.yourTotal);
+        const theirTotalEl = document.getElementById(t.theirTotal);
+        const verdictBox = document.getElementById(t.verdict);
 
-      let text = "Equal Trade";
-      let className = "verdict-box verdict-fair";
+        if (yourListEl) {
+          yourListEl.innerHTML = "";
+          yourTrade.forEach((item, idx) => {
+            yourListEl.innerHTML += `
+              <li class="trade-item">
+                <span>${item.name} (${item.value}m)</span>
+                <span class="remove-icon" onclick="removeFromYour(${idx})">✕</span>
+              </li>
+            `;
+          });
+        }
 
-      if (yourSum === 0 && theirSum === 0) {
-        text = "Equal Trade";
-      } else if (Math.abs(diff) <= 1.0) {
-        text = "Fair Trade";
-      } else if (theirSum > yourSum) {
-        text = `WIN (+${(theirSum - yourSum).toFixed(2)}m)`;
-        className = "verdict-box verdict-win";
-      } else {
-        text = `LOSS (-${(yourSum - theirSum).toFixed(2)}m)`;
-        className = "verdict-box verdict-loss";
-      }
+        if (theirListEl) {
+          theirListEl.innerHTML = "";
+          theirTrade.forEach((item, idx) => {
+            theirListEl.innerHTML += `
+              <li class="trade-item">
+                <span>${item.name} (${item.value}m)</span>
+                <span class="remove-icon" onclick="removeFromTheir(${idx})">✕</span>
+              </li>
+            `;
+          });
+        }
 
-      if (verdict) { verdict.innerText = text; verdict.className = className; }
-      if (verdictFull) { verdictFull.innerText = text; verdictFull.className = className; }
+        if (yourTotalEl) yourTotalEl.innerText = `${yourSum.toFixed(2)}m`;
+        if (theirTotalEl) theirTotalEl.innerText = `${theirSum.toFixed(2)}m`;
+
+        if (verdictBox) {
+          verdictBox.className = "verdict-box";
+          if (yourSum === 0 && theirSum === 0) {
+            verdictBox.innerText = "Equal Trade";
+            verdictBox.classList.add("verdict-fair");
+          } else if (Math.abs(diff) <= 0.5) {
+            verdictBox.innerText = "Fair Trade ⚖️";
+            verdictBox.classList.add("verdict-fair");
+          } else if (diff > 0.5) {
+            verdictBox.innerText = `WIN (+${diff.toFixed(2)}m) 🚀`;
+            verdictBox.classList.add("verdict-win");
+          } else {
+            verdictBox.innerText = `LOSE (${diff.toFixed(2)}m) 🛑`;
+            verdictBox.classList.add("verdict-loss");
+          }
+        }
+      });
     }
 
-    // FILTERS
-    function filterData() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const cat = document.getElementById('categoryFilter').value;
-      const status = document.getElementById('statusFilter').value;
-
-      const filtered = items.filter(i => 
-        i.name.toLowerCase().includes(search) &&
-        (cat === '' || i.category === cat) &&
-        (status === '' || i.status === status)
-      );
-      renderItems(filtered);
-    }
-
-    function filterDataItems() {
-      const search = document.getElementById('searchInputItems').value.toLowerCase();
-      const cat = document.getElementById('categoryFilterItems').value;
-
-      const filtered = items.filter(i => 
-        i.name.toLowerCase().includes(search) &&
-        (cat === '' || i.category === cat)
-      );
-      renderFullItems(filtered);
-    }
-
-    function filterPlayers() {
-      const search = document.getElementById('searchPlayer').value.toLowerCase();
-      const filtered = playersData.filter(p => p.name.toLowerCase().includes(search) || p.rep.toLowerCase().includes(search) || p.status.toLowerCase().includes(search));
-      renderPlayers(filtered);
-    }
-
-    // INITIALIZATION
-    window.onload = () => {
-      renderItems(items);
-      renderFullItems(items);
-      renderCarlas();
+    document.addEventListener("DOMContentLoaded", () => {
+      renderItemsGrid(items, "itemsGrid");
+      renderItemsGrid(items, "fullItemsGrid");
+      renderItemsGrid(items.filter(i => i.value >= 15.0), "carlasGrid");
       renderPlayers(playersData);
-    };
+      updateCalculator();
+    });
   </script>
 </body>
 </html>
