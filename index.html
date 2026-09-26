@@ -449,10 +449,17 @@
   <div class="container">
     <!-- Top Navigation Bar -->
     <nav class="navbar">
-      <a class="nav-item active" onclick="switchTab('trading')">
-        <svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>
-        Trading
-      </a>
+      <div class="dropdown">
+        <a class="nav-item" onclick="toggleDropdown(event)">
+          <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+          More ▾
+        </a>
+        <div class="dropdown-menu" id="moreDropdown">
+          <a class="dropdown-item" onclick="switchTab('more-guides')">📘 Trading Guides</a>
+          <a class="dropdown-item" onclick="switchTab('more-faq')">❓ FAQ & Rules</a>
+          <a class="dropdown-item" onclick="switchTab('more-changelog')">📜 Value Updates Log</a>
+        </div>
+      </div>
       <a class="nav-item" onclick="switchTab('items')">
         <svg viewBox="0 0 24 24"><path d="M4 11h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1zm10 0h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1zM4 21h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1zm10 0h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1z"/></svg>
         Items
@@ -469,17 +476,10 @@
         <svg viewBox="0 0 24 24"><path d="M12 2C8 2 5 6 5 11c0 4.4 3.6 11 7 11s7-6.6 7-11c0-5-3-9-7-9z"/></svg>
         Carlas
       </a>
-      <div class="dropdown">
-        <a class="nav-item" onclick="toggleDropdown(event)">
-          <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-          More ▾
-        </a>
-        <div class="dropdown-menu" id="moreDropdown">
-          <a class="dropdown-item" onclick="switchTab('more-guides')">📘 Trading Guides</a>
-          <a class="dropdown-item" onclick="switchTab('more-faq')">❓ FAQ & Rules</a>
-          <a class="dropdown-item" onclick="switchTab('more-changelog')">📜 Value Updates Log</a>
-        </div>
-      </div>
+      <a class="nav-item active" onclick="switchTab('trading')">
+        <svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>
+        Trading
+      </a>
     </nav>
 
     <header>
