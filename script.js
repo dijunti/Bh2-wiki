@@ -99,9 +99,13 @@ function renderItemsGrid(itemsToRender) {
 
 // Filtro Multicriterio
 function filterData() {
-  const searchText = document.getElementById("searchInput").value.toLowerCase();
-  const categorySelected = document.getElementById("categoryFilter") ? document.getElementById("categoryFilter").value : "";
-  const statusSelected = document.getElementById("statusFilter").value;
+  const searchInput = document.getElementById("searchInput");
+  const categoryFilter = document.getElementById("categoryFilter");
+  const statusFilter = document.getElementById("statusFilter");
+
+  const searchText = searchInput ? searchInput.value.toLowerCase() : "";
+  const categorySelected = categoryFilter ? categoryFilter.value : "";
+  const statusSelected = statusFilter ? statusFilter.value : "";
 
   const filtered = items.filter((item) => {
     const matchesSearch = item.name.toLowerCase().includes(searchText);
@@ -148,6 +152,8 @@ function updateCalculator() {
   const theirTotalEl = document.getElementById("theirTotal");
   const verdictBox = document.getElementById("verdictBox");
 
+  if (!yourListEl || !theirListEl) return;
+
   yourListEl.innerHTML = "";
   let yourSum = 0;
   yourTrade.forEach((item, idx) => {
@@ -172,8 +178,10 @@ function updateCalculator() {
     `;
   });
 
-  yourTotalEl.innerText = `${yourSum.toFixed(2)}m`;
-  theirTotalEl.innerText = `${theirSum.toFixed(2)}m`;
+  if (yourTotalEl) yourTotalEl.innerText = `${yourSum.toFixed(2)}m`;
+  if (theirTotalEl) theirTotalEl.innerText = `${theirSum.toFixed(2)}m`;
+
+  if (!verdictBox) return;
 
   const diff = theirSum - yourSum;
   verdictBox.className = "verdict-box";
@@ -193,6 +201,19 @@ function updateCalculator() {
   }
 }
 
+// Navigation Tab Handler
+function setupNavbar() {
+  const navItems = document.querySelectorAll(".navbar .nav-item");
+  navItems.forEach((navItem) => {
+    navItem.addEventListener("click", (e) => {
+      e.preventDefault();
+      navItems.forEach((item) => item.classList.remove("active"));
+      navItem.classList.add("active");
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   renderItemsGrid(items);
+  setupNavbar();
 });
